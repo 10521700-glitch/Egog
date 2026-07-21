@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil Hechicero</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        background: #030303;
+        color: #e5e5e5;
+        font-family: 'Space Grotesk', sans-serif;
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+   .cursed-bg {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(220, 38, 38, 0.06) 0%, transparent 50%);
+        animation: cursedPulse 10s ease-in-out infinite;
+        z-index: 0;
+    }
+    @keyframes cursedPulse { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
+
+   .container { position: relative; z-index: 10; max-width: 900px; margin: 0 auto; }
+
+    /* PERFIL */
+   .profile { text-align: center; margin-bottom: 50px; animation: fadeIn 0.8s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+   .pfp {
+        width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 18px;
+        border: 3px solid #dc2626; box-shadow: 0 0 30px rgba(220, 38, 38, 0.4);
+        object-fit: cover; transition: 0.4s;
+    }
+   .pfp:hover { transform: scale(1.05); box-shadow: 0 0 40px rgba(220, 38, 38, 0.6); }
+   .name { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: 2px; }
+   .rank { font-size: 13px; color: #dc2626; letter-spacing: 3px; margin-top: 5px; }
+
+    h2 {
+        text-align: center; font-size: 16px; font-weight: 700; letter-spacing: 3px;
+        color: #dc2626; margin-bottom: 30px; text-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+    }
+
+   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+   .folder {
+        background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(220, 38, 38, 0.2);
+        border-radius: 8px; padding: 30px 20px; text-align: center; cursor: pointer;
+        backdrop-filter: blur(8px); transition: all 0.4s ease; position: relative; overflow: hidden;
+    }
+   .folder:hover { border-color: #dc2626; transform: translateY(-6px); box-shadow: 0 10px 30px rgba(220, 38, 38, 0.25); }
+   .folder-seal {
+        width: 50px; height: 50px; margin: 0 auto 15px; border: 2px solid #dc2626;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 22px; color: #dc2626;
+    }
+   .folder-name { font-size: 15px; font-weight: 500; letter-spacing: 1px; }
+
+    /* VENTANA DOMINIO */
+   .domain {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95);
+        width: 90%; max-width: 650px; background: #050505; border: 1px solid #dc2626;
+        border-radius: 12px; z-index: 1000; opacity: 0; pointer-events: none;
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+   .domain.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
+   .domain-header {
+        padding: 18px 24px; border-bottom: 1px solid rgba(220, 38, 38, 0.3);
+        display: flex; justify-content: space-between; align-items: center;
+    }
+   .domain-title { color: #dc2626; font-weight: 700; letter-spacing: 1px; }
+   .close { background: none; border: none; color: #dc2626; font-size: 24px; cursor: pointer; transition: 0.3s; }
+   .close:hover { transform: rotate(180deg); }
+   .domain-content { padding: 24px; max-height: 65vh; overflow-y: auto; }
+   .item {
+        display: block; background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.15);
+        color: #ddd; text-decoration: none; padding: 16px 20px; margin: 12px 0; border-radius: 8px;
+        transition: 0.3s; font-size: 14px; cursor: pointer;
+    }
+   .item:hover { background: rgba(220, 38, 38, 0.1); border-color: #dc2626; transform: translateX(8px); }
+
+   .overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+        z-index: 999; opacity: 0; pointer-events: none; transition: 0.4s;
+    }
+   .overlay.active { opacity: 1; pointer-events: all; }
+
+    /* BARRA DE CARGA */
+   .loader {
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        z-index: 2000; text-align: center; display: none;
+    }
+   .loader.active { display: block; animation: fadeIn 0.3s ease; }
+   .loader-text {
+        color: #dc2626; font-weight: 700; letter-spacing: 2px; margin-bottom: 15px;
+        font-size: 14px;
+    }
+   .loader-bar {
+        width: 300px; height: 4px; background: rgba(220, 38, 38, 0.2);
+        border-radius: 2px; overflow: hidden; margin: 0 auto;
+    }
+   .loader-progress {
+        height: 100%; background: #dc2626; width: 0%;
+        box-shadow: 0 0 15px rgba(220, 38, 38, 0.8);
+        animation: load 1.5s ease-in-out forwards;
+    }
+    @keyframes load { to { width: 100%; } }
+</style>
+</head>
+<body>
+
+<div class="cursed-bg"></div>
+
+<div class="container">
+    <!-- TU PERFIL -->
+    <div class="profile">
+        <img src="tu-foto.jpg" alt="pfp" class="pfp" id="pfp">
+        <div class="name" id="nombre">TU NOMBRE</div>
+        <div class="rank">HECHICERO GRADO 2</div>
+    </div>
+
+    <h2>DOMINIO: TÉCNICAS MALDITAS</h2>
+    <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="domain" id="domain">
+    <div class="domain-header">
+        <div class="domain-title" id="domainTitle">TÉCNICA MALDITA</div>
+        <button class="close" onclick="closeDomain()">✕</button>
+    </div>
+    <div class="domain-content" id="domainContent"></div>
+</div>
+
+<!-- BARRA DE CARGA -->
+<div class="loader" id="loader">
+    <div class="loader-text">ACTIVANDO TÉCNICA MALDITA...</div>
+    <div class="loader-bar"><div class="loader-progress"></div></div>
+</div>
+
+<script>
+// ===== CONFIGURA TU PERFIL Y CARPETAS =====
+const perfil = {
+    nombre: "Ego", // PON TU NOMBRE
+    foto: "https://github.com/10521700-glitch/ego-pageOriginal/blob/main/foto.jpg?raw=true",  // PON TU FOTO
+    rango: "HECHICERO GRADO 2"
+};
+
+const tecnicas = [
+    {
+        nombre: "Minecraft Clients",
+        sello: "卍",
+        contenido: [
+            { nombre: "Fey Client 1.8.9", url: "https://google.com" },
+            { nombre: "Celestial Client", url: "https://youtube.com" },
+            { nombre: "OptiFine + Sodium", url: "https://github.com" }
+        ]
+    },
+    {
+        nombre: "Links Personales",
+        sello: "🔗",
+        contenido: [
+            { nombre: "Instagram", url: "https://instagram.com" },
+            { nombre: "TikTok", url: "https://tiktok.com" }
+        ]
+    }
+];
+// =====================================
+
+// Cargar perfil
+document.getElementById('nombre').textContent = perfil.nombre;
+document.getElementById('pfp').src = perfil.foto;
+document.querySelector('.rank').textContent = perfil.rango;
+
+const grid = document.getElementById('grid');
+
+// Crear carpetas
+tecnicas.forEach(tecnica => {
+    const div = document.createElement('div');
+    div.className = 'folder';
+    div.innerHTML = `
+        <div class="folder-seal">${tecnica.sello}</div>
+        <div class="folder-name">${tecnica.nombre}</div>
+    `;
+    div.onclick = () => openDomain(tecnica);
+    grid.appendChild(div);
+});
+
+function openDomain(tecnica) {
+    document.getElementById('domainTitle').textContent = tecnica.nombre.toUpperCase();
+    const content = document.getElementById('domainContent');
+    content.innerHTML = '';
+    
+    tecnica.contenido.forEach(item => {
+        const a = document.createElement('a');
+        a.className = 'item';
+        a.textContent = `▸ ${item.nombre}`;
+        a.onclick = (e) => {
+            e.preventDefault();
+            openLink(item.url);
+        };
+        content.appendChild(a);
+    });
+
+    document.getElementById('domain').classList.add('active');
+    document.getElementById('overlay').classList.add('active');
+}
+
+function closeDomain() {
+    document.getElementById('domain').classList.remove('active');
+    document.getElementById('overlay').classList.remove('active');
+}
+
+// FUNCIÓN PARA ABRIR LINK CON BARRA DE CARGA
+function openLink(url) {
+    const loader = document.getElementById('loader');
+    loader.classList.add('active');
+    
+    // Reiniciar animación de la barra
+    const progress = loader.querySelector('.loader-progress');
+    progress.style.animation = 'none';
+    setTimeout(() => { progress.style.animation = 'load 1.5s ease-in-out forwards'; }, 10);
+
+    setTimeout(() => {
+        window.open(url, '_blank');
+        loader.classList.remove('active');
+    }, 1500); // 1.5 segundos de carga
+}
+
+document.getElementById('overlay').onclick = closeDomain;
+</script>
+
+</body>
+</html>
